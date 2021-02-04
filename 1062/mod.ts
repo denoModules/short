@@ -7,7 +7,7 @@ const emojistring2arr = (str: string): string[] => {
     }
     return arr;
 }
-const getChars = (type: Type): string[] => {
+const getChars = (type: string): string[] => {
     if (type == Type.emoji) {
         const str = '🙈🙉🙊🐵🐒🐶🐕🐩🐺🐱😺😸😹😻😼😽🙀😿😾🐈🐯🐅🐆🐴🐎🐮🐂🐃🐄🐷🐖🐗🐽🐏🐑🐐🐪🐫🐘🐭🐁🐀🐹🐰🐇🐻🐨🐼🐾🐔🐓🦆🦢🦜🦉🐣🐤🐥🐦🐧🐸🐊🐢🐍🐲🐉🐳🐋🐬🐟🐠🐡🐙🐚🐌🐛🐜🐝🐞🦋💐🌸💮🌹🌺🌻🌼🌷🌱🌲🌳🌴🌵🌾🌿🍀🍁🍂🍃🍇🍈🍉🍊🍋🍌🍍🍎🍏🍐🍑🍒🍓🍅🍆🌽🍄';
         return emojistring2arr(str);
@@ -18,11 +18,11 @@ const getChars = (type: Type): string[] => {
     }
 }
 export enum Type {
-    default,
-    chinese,
-    emoji
+    default = "default",
+    chinese = "chinese",
+    emoji = "emoji"
 }
-export const encode = (number: number, type: Type): string => {
+export const encode = (number: number, type: string): string => {
     const chars = getChars(type);
     const radix: number = chars.length;
     const arr: string[] = [];
@@ -35,7 +35,7 @@ export const encode = (number: number, type: Type): string => {
     return arr.join('');
 }
 
-export const decode = (str: string, type: Type): number => {
+export const decode = (str: string, type: string): number => {
     const chars = getChars(type);
     let input: string[] = [];
     if (type == Type.emoji) {

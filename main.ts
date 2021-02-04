@@ -7,7 +7,7 @@ import { encode, decode, Type } from './1062/mod.ts';
 const db = new DB("db.sqlite");
 db.query("CREATE TABLE IF NOT EXISTS urls (id INTEGER PRIMARY KEY AUTOINCREMENT, code TEXT,url TEXT)");
 const app = new Application();
-const port = 3000;
+const port = 8080;
 
 const router = new Router();
 router
@@ -17,21 +17,26 @@ router
         // 
         for (const [id, url] of res) {
             console.log(id, url)
-            if(url){
+            if (url) {
                 response.redirect(url);
             }
         }
         response.body = "404";
     })
     .post("/", async ({ request, response, params }: Context | any) => {
-        const { url } = await request.body({ type: 'json' }).value;
-        await db.query("INSERT INTO urls (url) VALUES (:url)", { url: url });
-        const lastid = await db.lastInsertRowId;
-        console.log(lastid);
-        const str = encode(lastid, Type.default)
-        console.log(str);
-        await db.query("UPDATE urls SET code = :code where id=:id", { code: str, id: lastid });
-        response.body = str;
+        const { url, type } = await request.body({ type: 'json' }).value;
+        if (type in Type) {
+            await db.query("INSERT INTO urls (url) VALUES (:url)", { url: url });
+            const lastid = await db.lastInsertRowId;
+            console.log(lastid);
+            const str = encode(lastid, type);
+            console.log(str);
+            await db.query("UPDATE urls SET code = :code where id=:id", { code: str, id: lastid });
+            response.body = str;
+        } else {
+            response.body = "type error";
+        }
+
     })
 
 app.use(oakCors());
